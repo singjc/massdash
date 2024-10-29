@@ -85,11 +85,12 @@ class SqMassDataAccess:
         return self._returnDataForChromatogram(data)
     
     def _getChromatogramsHelperFromNativeIds(self, native_ids: List[str]):
-        stmt ="SELECT CHROMATOGRAM_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA INNER JOIN CHROMATOGRAM ON CHROMATOGRAM.ID = CHROMATOGRAM_ID WHERE NATIVE_ID IN ("
+        stmt ="SELECT NATIVE_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA INNER JOIN CHROMATOGRAM ON CHROMATOGRAM.ID = CHROMATOGRAM_ID WHERE NATIVE_ID IN ("
         for myid in native_ids:
             stmt += str(myid) + ","
         stmt = stmt[:-1]
         stmt += ")"
+        stmt += " ORDER BY NATIVE_ID"
 
         data = [row for row in self.c.execute(stmt)]
         return self._returnDataForChromatogram(data)
@@ -135,6 +136,7 @@ class SqMassDataAccess:
 
         return c
 
+    '''
     def getDataForChromatogram(self, myid: str, label: str) -> Chromatogram:
         """
         Get data from a single chromatogram
@@ -144,10 +146,12 @@ class SqMassDataAccess:
         - data contains the raw (blob) data for a single data array
         """
 
-        data = [row for row in self.c.execute("SELECT CHROMATOGRAM_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA WHERE CHROMATOGRAM_ID = %s" % myid )]
+        data = [row for row in self.c.execute("SELECT NATIVE_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA WHERE CHROMATOGRAM_ID = %s" % myid )]
         res = list(self._returnDataForChromatogram(data).values())[0]
         return Chromatogram(res[0], res[1], label)
+    '''
 
+    '''
     def getDataForChromatogramFromNativeId(self, native_id):
         """
         Get data from a single chromatogram
@@ -157,8 +161,9 @@ class SqMassDataAccess:
         - data contains the raw (blob) data for a single data array
         """
 
-        data = [row for row in self.c.execute("SELECT CHROMATOGRAM_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA INNER JOIN CHROMATOGRAM ON CHROMATOGRAM.ID = CHROMATOGRAM_ID WHERE NATIVE_ID = %s" % native_id )]
+        data = [row for row in self.c.execute("SELECT NATIVE_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA INNER JOIN CHROMATOGRAM ON CHROMATOGRAM.ID = CHROMATOGRAM_ID WHERE NATIVE_ID = %s order by native_id" % native_id )]
         return list(self._returnDataForChromatogram(data).values())[0]
+    '''
 
     def getDataForChromatogramsFromNativeIdsDf(self, native_ids: List[str], labels: List[str]) -> pd.DataFrame:
         '''
@@ -202,7 +207,7 @@ class SqMassDataAccess:
 
     def _returnDataForChromatogram(self, data):
         # prepare result
-        chr_ids = set([chr_id for chr_id, compr, data_type, d in data] )
+        chr_ids = [chr_id for chr_id, compr, data_type, d in data]
         res = OrderedDict()
         numpress_config = po.NumpressConfig()
         for i in chr_ids:
