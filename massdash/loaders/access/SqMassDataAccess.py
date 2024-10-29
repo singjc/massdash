@@ -136,35 +136,6 @@ class SqMassDataAccess:
 
         return c
 
-    '''
-    def getDataForChromatogram(self, myid: str, label: str) -> Chromatogram:
-        """
-        Get data from a single chromatogram
-
-        - compression is one of 0 = no, 1 = zlib, 2 = np-linear, 3 = np-slof, 4 = np-pic, 5 = np-linear + zlib, 6 = np-slof + zlib, 7 = np-pic + zlib
-        - data_type is one of 0 = mz, 1 = int, 2 = rt
-        - data contains the raw (blob) data for a single data array
-        """
-
-        data = [row for row in self.c.execute("SELECT NATIVE_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA WHERE CHROMATOGRAM_ID = %s" % myid )]
-        res = list(self._returnDataForChromatogram(data).values())[0]
-        return Chromatogram(res[0], res[1], label)
-    '''
-
-    '''
-    def getDataForChromatogramFromNativeId(self, native_id):
-        """
-        Get data from a single chromatogram
-
-        - compression is one of 0 = no, 1 = zlib, 2 = np-linear, 3 = np-slof, 4 = np-pic, 5 = np-linear + zlib, 6 = np-slof + zlib, 7 = np-pic + zlib
-        - data_type is one of 0 = mz, 1 = int, 2 = rt
-        - data contains the raw (blob) data for a single data array
-        """
-
-        data = [row for row in self.c.execute("SELECT NATIVE_ID, COMPRESSION, DATA_TYPE, DATA FROM DATA INNER JOIN CHROMATOGRAM ON CHROMATOGRAM.ID = CHROMATOGRAM_ID WHERE NATIVE_ID = %s order by native_id" % native_id )]
-        return list(self._returnDataForChromatogram(data).values())[0]
-    '''
-
     def getDataForChromatogramsFromNativeIdsDf(self, native_ids: List[str], labels: List[str]) -> pd.DataFrame:
         '''
         Get chromatogram data as a dataframe
