@@ -11,8 +11,6 @@ from pathlib import Path
 from .ResultsLoader import ResultsLoader
 # Structs
 from ..structs import TransitionGroup, TransitionGroupFeature
-from .access import OSWDataAccess
-from .SpectralLibraryLoader import SpectralLibraryLoader
 from ..util import LOGGER, in_notebook
 
 from scipy.signal import savgol_filter, convolve
@@ -35,15 +33,9 @@ class GenericRawDataLoader(ResultsLoader, metaclass=ABCMeta):
         else:
             self.dataFiles = dataFiles
 
-        if self.libraryFile is None:
-            for a in self.rsltsAccess:
-                if isinstance(a, OSWDataAccess): 
-                    self.libraryAccess = SpectralLibraryLoader(a.filename)
-                    self.libraryAccess.load()
-
         ## overwrite run names since we are specifying data files
         self.runNames = [Path(f).stem for f in self.dataFiles]
-        
+
     @abstractmethod
     def loadTransitionGroups(self, pep_id: str, charge: int, runNames: Union[None, str, List[str]]= None) -> Dict[str, TransitionGroup]:
         '''

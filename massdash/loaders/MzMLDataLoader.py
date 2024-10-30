@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 
 # Loaders
-from .access import MzMLDataAccess
+from .access import MzMLDataAccess, OSWDataAccess
+from .SpectralLibraryLoader import SpectralLibraryLoader
 from .GenericSpectrumLoader import GenericSpectrumLoader
 # Structs
 from ..structs import TransitionGroup, FeatureMap, TargetedDIAConfig, FeatureMapCollection, TopTransitionGroupFeatureCollection, TransitionGroupCollection
@@ -27,10 +28,19 @@ class MzMLDataLoader(GenericSpectrumLoader):
         libraryFile: (str) The path to the library file (.tsv or .pqp)
         
     '''
-    def __init__(self, **kwargs):
+    def __init__(self, libraryFile, **kwargs):
         super().__init__(**kwargs) 
         self.dataAccess = [MzMLDataAccess(f, 'ondisk', verbose=self.verbose) for f in self.dataFiles]
         self.has_im = np.all([d.has_im for d in self.dataAccess])
+        self.libraryFile = libraryFile
+
+        # If the library is not explicitly set, 
+        if self.libraryFile is not None:
+            self.libraryAccess = SpectralLibraryLoader(self.libraryFile)
+        else: # self.libraryFile is None:
+            for a in self.rsltsAccess:
+                if isinstance(a, OSWDataAccess): 
+                   self.libraryAccess = SpectralLibraryLoader(a.filename)
         if self.libraryAccess is None:
             raise ValueError("If .osw file is not supplied, library file is required for MzMLDataLoader to perform targeted extraction")
                    

@@ -40,16 +40,14 @@ class ResultsLoader:
 
     def __init__(self, 
                  rsltsFile: Union[str, List[str]], 
-                 libraryFile: str = None,
                  verbose: bool=False, 
                  mode: Literal['module', 'gui'] = 'module'):
 
+        print("in results loader")
         # Attributes (set further down)
         self.rsltsAccess = []
-        self.libraryAccess = None
         self.runNames = None
         self.verbose = verbose
-        self.libraryFile = libraryFile
         self.software = None
         self._oswAccess = None
         self._oswAccessChecked = False
@@ -78,11 +76,6 @@ class ResultsLoader:
         # If called as a Results loader, infer the run names since no raw data will be used.
         self.runNames = self._inferRunNames()
         self.software = self._loadSoftware()
-
-        if self.libraryFile is not None:
-            self.libraryAccess = SpectralLibraryLoader(self.libraryFile)
-            self.libraryAccess.load()
-
 
     def _inferRunNames(self):
         '''
