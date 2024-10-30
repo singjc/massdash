@@ -12,6 +12,7 @@ import pandas as pd
 from .access import MzMLDataAccess, OSWDataAccess
 from .SpectralLibraryLoader import SpectralLibraryLoader
 from .GenericSpectrumLoader import GenericSpectrumLoader
+from .ResultsLoader import ResultsLoader
 # Structs
 from ..structs import TransitionGroup, FeatureMap, TargetedDIAConfig, FeatureMapCollection, TopTransitionGroupFeatureCollection, TransitionGroupCollection
 # Utils
@@ -47,6 +48,7 @@ class MzMLDataLoader(GenericSpectrumLoader):
         if self.libraryAccess is None:
             raise ValueError("If .osw file is not supplied, library file is required for MzMLDataLoader to perform targeted extraction")
                    
+    @ResultsLoader.cache_results
     def loadTransitionGroups(self, pep_id: str, charge: int, config: TargetedDIAConfig, runNames: Union[None, str, List[str]]=None) -> Dict[str, TransitionGroup]:
         '''
         Loads the transition group for a given peptide ID and charge across all files
@@ -63,6 +65,7 @@ class MzMLDataLoader(GenericSpectrumLoader):
 
         return TransitionGroupCollection({ run: data.to_chromatograms() for run, data in out_feature_map.items() })
     
+    @ResultsLoader.cache_results
     def loadTransitionGroupsDf(self, pep_id: str, charge: int, config: TargetedDIAConfig) -> Dict[str, pd.DataFrame]:
         '''
         Loads the transition group for a given peptide ID and charge across all files into a pandas DataFrame
@@ -86,6 +89,7 @@ class MzMLDataLoader(GenericSpectrumLoader):
         out_df = out_df.loc[:,~out_df.columns.duplicated()]
         return out_df
 
+    @ResultsLoader.cache_results
     def loadFeatureMaps(self, pep_id: str, charge: int, config=TargetedDIAConfig, runNames: Union[None, str, List[str]] = None) -> FeatureMapCollection:
         '''
         Loads a dictionary of FeatureMaps (where the keys are the filenames) from the results file
