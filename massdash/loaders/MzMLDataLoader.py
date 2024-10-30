@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 # Loaders
+from .access import MzMLDataAccess
 from .GenericSpectrumLoader import GenericSpectrumLoader
 from .ResultsLoader import ResultsLoader
 # Structs
