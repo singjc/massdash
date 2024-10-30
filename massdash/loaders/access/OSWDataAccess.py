@@ -340,7 +340,7 @@ SCORE_MS2.QVALUE AS ms2_mscore,"""
                     ANNOTATION 
                     FROM TRANSITION_PRECURSOR_MAPPING 
                     INNER JOIN TRANSITION ON TRANSITION_PRECURSOR_MAPPING.TRANSITION_ID= TRANSITION.ID
-                    WHERE TRANSITION.DETECTING = 1 and PRECURSOR_ID = {precursor_id}
+                    WHERE TRANSITION.DETECTING = 1 and PRECURSOR_ID = {precursor_id} order by TRANSITION_ID
                 '''
         else:
             stmt = f'''
@@ -348,7 +348,7 @@ SCORE_MS2.QVALUE AS ms2_mscore,"""
                     TRANSITION.TYPE || TRANSITION.ORDINAL || '^' || TRANSITION.CHARGE AS ANNOTATION
                     FROM TRANSITION_PRECURSOR_MAPPING 
                     INNER JOIN TRANSITION ON TRANSITION_PRECURSOR_MAPPING.TRANSITION_ID = TRANSITION.ID
-                    WHERE TRANSITION.DETECTING = 1 and PRECURSOR_ID = {precursor_id}
+                    WHERE TRANSITION.DETECTING = 1 and PRECURSOR_ID = {precursor_id} order by TRANSITION_ID
             '''
         return pd.read_sql(stmt, self.conn)
 

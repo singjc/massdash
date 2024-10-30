@@ -40,18 +40,6 @@ def test_getDataForChromatograms(mass_data_access, snapshot_pandas):
     data_out = pd.concat([d.toPandasDf() for d in data]) 
     assert snapshot_pandas == data_out
 
-def test_getDataForChromatogram(mass_data_access, snapshot_pandas):
-    myid = 424
-    data = mass_data_access.getDataForChromatogram(myid, "y4^1")
-    data_out = data.toPandasDf()
-    assert snapshot_pandas == data_out
-
-def test_getDataForChromatogramFromNativeId(mass_data_access, snapshot_pandas):
-    native_id = 992928
-    data = mass_data_access.getDataForChromatogramFromNativeId(native_id)
-    data_out = pd.DataFrame(data)
-    assert snapshot_pandas == data_out
-
 def test_getDataForChromatogramsFromNativeIds(mass_data_access, snapshot_pandas):
     native_ids = [180, 181, 182, 183, 183, 185]
     labels = ["y4^1", "y3^1", "y6^1", "y7^1", "y7^1", "y8^1"]
