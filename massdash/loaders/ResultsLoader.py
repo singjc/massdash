@@ -100,14 +100,11 @@ class ResultsLoader:
             cache_key = (pep_id, charge)
             result_type = func.__name__
             if cache_key not in self.cache.keys():
-                print("cache miss")
                 self.cache[cache_key] = {}
                 self.cache[cache_key][result_type] = func(self, pep_id, charge, *args, **kwargs)
             elif result_type not in self.cache[cache_key].keys():
-                print("cache miss")
                 self.cache[cache_key][result_type] = func(self, pep_id, charge, *args, **kwargs)
             else:
-                print("cache hit")
                 pass
             return self.cache[cache_key][result_type]
         return wrapper 
