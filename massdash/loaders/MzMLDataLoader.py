@@ -33,6 +33,7 @@ class MzMLDataLoader(GenericSpectrumLoader):
         self.dataAccess = [MzMLDataAccess(f, 'ondisk', verbose=self.verbose) for f in self.dataFiles]
         self.has_im = np.all([d.has_im for d in self.dataAccess])
         self.libraryFile = libraryFile
+        self.libraryAccess = None
 
         # If the library is not explicitly set, 
         if self.libraryFile is not None:
@@ -41,6 +42,8 @@ class MzMLDataLoader(GenericSpectrumLoader):
             for a in self.rsltsAccess:
                 if isinstance(a, OSWDataAccess): 
                    self.libraryAccess = SpectralLibraryLoader(a.filename)
+        
+        # If library access is not set, then throw an error
         if self.libraryAccess is None:
             raise ValueError("If .osw file is not supplied, library file is required for MzMLDataLoader to perform targeted extraction")
                    
