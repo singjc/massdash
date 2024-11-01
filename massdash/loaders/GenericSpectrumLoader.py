@@ -26,7 +26,7 @@ class GenericSpectrumLoader(GenericRawDataLoader, metaclass=ABCMeta):
         libraryFile: (str) The path to the library file (.tsv or .pqp)
     '''
     
-    def __init__(self, libraryFile, **kwargs):
+    def __init__(self, libraryFile=None, **kwargs):
         super().__init__(**kwargs)
 
         self.libraryFile = libraryFile
